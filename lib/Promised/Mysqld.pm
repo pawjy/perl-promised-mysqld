@@ -35,9 +35,11 @@ sub _find_mysql ($) {
       $mysql_install_db ||= "$dir$_/mysql_install_db"
           if -x "$dir$_/mysql_install_db";
     }
-    if (defined $mysqld and defined $mysql_install_db) {
+    if (defined $mysqld) {
       $self->{mysqld} = $mysqld;
-      $self->{mysql_install_db} = $mysql_install_db;
+      $self->{mysql_install_db} = $mysql_install_db; # or undef
+      warn "|mysql_install_db| is not specified"
+          unless defined $mysql_install_db;
       return 1;
     }
   }
