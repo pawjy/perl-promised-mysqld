@@ -21,6 +21,9 @@ testing of Perl applications.  It creates a database in the temporary
 directory (or in the directory specified by the application) and
 starts a MySQL server instance using it.
 
+Use of this module is B<DEPRECATED> in favor of MariaDB Docker image
+with L<Promised::Command::Docker>.
+
 =head1 METHODS
 
 There are following methods:

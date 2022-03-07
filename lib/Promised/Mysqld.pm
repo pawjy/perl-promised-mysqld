@@ -46,7 +46,10 @@ sub _find_mysql ($) {
 
 sub set_mysqld_and_mysql_install_db ($$$) {
   $_[0]->{mysqld} = $_[1] // die "|mysqld| is not specified";
-  $_[0]->{mysql_install_db} = $_[2] // die "|mysql_install_db| is not specified";
+  $_[0]->{mysql_install_db} = $_[2] // do {
+    warn "|mysql_install_db| is not specified";
+    undef;
+  };
 } # set_msqld_and_mysql_install_db
 
 sub set_db_dir ($$) {
@@ -100,8 +103,24 @@ sub _create_mysql_db ($) {
   my $db_dir = $self->{db_dir};
   return Promise->resolve if -d "$db_dir/var/mysql";
 
+  my $run_mysqld = sub {
+    warn "Using mysqld --initialize...\n";
+    my $cmd = Promised::Command->new
+        ([$self->{mysqld},
+          '--defaults-file=' . $self->{my_cnf_file},
+          '--user=root',
+          '--initialize-insecure']);
+    return $cmd->run->then (sub {
+      return $cmd->wait;
+    })->then (sub {
+      my $result = $_[0];
+      die $result unless $result->exit_code == 0;
+    });
+  }; # $run_mysqld
+  return $run_mysqld->() if not defined $self->{mysql_install_db};
+
   ## <http://dev.mysql.com/doc/refman/5.7/en/mysql-install-db.html>
-  ## XXX "mysql_install_db is deprecated as of MySQL 5.7.6 because its
+  ## "mysql_install_db is deprecated as of MySQL 5.7.6 because its
   ## functionality has been integrated into mysqld, the MySQL server."
   my $base_dir = $self->{mysql_install_db};
   $base_dir =~ s{[^/]+\z}{};
