@@ -9,6 +9,7 @@ updatenightly: local/bin/pmbp.pl
 	$(GIT) add modules t_deps/modules
 	perl local/bin/pmbp.pl --update
 	$(GIT) add config
+	$(CURL) -sSLf https://raw.githubusercontent.com/wakaba/ciconfig/master/ciconfig | RUN_GIT=1 REMOVE_UNUSED=1 perl
 
 ## ------ Setup ------
 
@@ -35,7 +36,13 @@ pmbp-install: pmbp-upgrade
 
 PROVE = ./prove
 
-test: test-deps test-main
+test: test-deps test-info test-main
+
+test-info:
+	-which mysqld
+	-mysqld --version
+	-which mysql_install_db
+	-mysql_install_db --help
 
 test-deps: deps
 	perl local/bin/pmbp.pl $(PMBP_OPTIONS) --install-mysqld

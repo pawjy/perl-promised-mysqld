@@ -187,16 +187,19 @@ commands).
 
 Wakaba <wakaba@suikawiki.org>.
 
-=head1 ACKNOWLEDGEMENTS
+=head1 HISTORY
 
 This module is inspired by L<Test::mysqld>
 <https://github.com/kazuho/p5-test-mysqld> and
 L<Test::MySQL::CreateDatabase>
 <https://github.com/wakaba/perl-rdb-utils/tree/master/lib/Test/MySQL>.
 
+This Git repository was located at
+<https://github.com/wakaba/perl-promised-mysqld> until 7 March, 2022.
+
 =head1 LICENSE
 
-Copyright 2015-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2015-2022 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
