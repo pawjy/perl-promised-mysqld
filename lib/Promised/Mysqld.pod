@@ -21,6 +21,9 @@ testing of Perl applications.  It creates a database in the temporary
 directory (or in the directory specified by the application) and
 starts a MySQL server instance using it.
 
+Use of this module is B<DEPRECATED> in favor of MariaDB Docker image
+with L<Promised::Command::Docker>.
+
 =head1 METHODS
 
 There are following methods:
@@ -169,7 +172,9 @@ of signal handlers.
 
 =head1 DEPENDENCY
 
-This module requires Perl 5.12 or later.
+This module requires Perl 5.12 or later on Linux, or the latest
+version of Perl 5 on Mac OS X.  The latest version of Perl 5 on Linux
+is recommended.
 
 The module requires L<Promise>
 <https://github.com/wakaba/perl-promise>, L<Promised::Command>
@@ -187,16 +192,19 @@ commands).
 
 Wakaba <wakaba@suikawiki.org>.
 
-=head1 ACKNOWLEDGEMENTS
+=head1 HISTORY
 
 This module is inspired by L<Test::mysqld>
 <https://github.com/kazuho/p5-test-mysqld> and
 L<Test::MySQL::CreateDatabase>
 <https://github.com/wakaba/perl-rdb-utils/tree/master/lib/Test/MySQL>.
 
+This Git repository was located at
+<https://github.com/wakaba/perl-promised-mysqld> until 7 March, 2022.
+
 =head1 LICENSE
 
-Copyright 2015-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2015-2022 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
