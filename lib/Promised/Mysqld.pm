@@ -105,13 +105,15 @@ sub _create_mysql_db ($) {
   my $db_dir = $self->{db_dir};
   return Promise->resolve if -d "$db_dir/var/mysql";
 
+  ## <https://docs.oracle.com/cd/E17952_01/mysql-8.0-ja/upgrading-from-previous-series.html>
   my $run_mysqld = sub {
     warn "Using mysqld --initialize...\n";
     my $cmd = Promised::Command->new
         ([$self->{mysqld},
           '--defaults-file=' . $self->{my_cnf_file},
           '--user=root',
-          '--initialize-insecure']);
+          '--initialize-insecure',
+          '--default-authentication-plugin=mysql_native_password']);
     return $cmd->run->then (sub {
       return $cmd->wait;
     })->then (sub {
