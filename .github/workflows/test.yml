@@ -85,14 +85,6 @@
                   {
                      "os" : "macos-latest",
                      "perl_version" : "latest"
-                  },
-                  {
-                     "os" : "macos-latest",
-                     "perl_version" : "5.14.2"
-                  },
-                  {
-                     "os" : "macos-latest",
-                     "perl_version" : "5.12.4"
                   }
                ]
             }

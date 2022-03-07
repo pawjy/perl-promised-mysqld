@@ -1,7 +1,7 @@
 {
   "github": {
     "pmbp": "5.12+",
-    "macos": true,
+    "macos": {"latest_perl_only": true},
     "merger": true,
     "gaa": true
   }

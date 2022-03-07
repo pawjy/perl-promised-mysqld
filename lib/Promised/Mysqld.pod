@@ -169,7 +169,9 @@ of signal handlers.
 
 =head1 DEPENDENCY
 
-This module requires Perl 5.12 or later.
+This module requires Perl 5.12 or later on Linux, or the latest
+version of Perl 5 on Mac OS X.  The latest version of Perl 5 on Linux
+is recommended.
 
 The module requires L<Promise>
 <https://github.com/wakaba/perl-promise>, L<Promised::Command>
