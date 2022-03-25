@@ -24,7 +24,8 @@ sub _find_mysql ($) {
   my $self = $_[0];
   return 1 if defined $self->{mysqld} and defined $self->{mysql_install_db};
   for ('/usr/local/opt/mysql/bin', # homebrew
-       (split /:/, $ENV{PATH} || ''), '/usr/local/mysql/bin') {
+       (split /:/, $ENV{PATH} || ''),
+       '/usr/local/mysql/bin') {
     my $dir = $_;
     $dir =~ s{[^/]*$}{};
     $dir = "." unless length $dir;
@@ -132,13 +133,15 @@ sub _create_mysql_db ($) {
   $base_dir =~ s{(?!^)/\z}{};
   my $temp;
   my $run; $run = sub {
-    my $with_insecure = shift;
+    my $mode = shift;
+    ## <https://mariadb.com/kb/en/mysql_install_db/>
     my $cmd = Promised::Command->new ([
       $self->{mysql_install_db},
       '--defaults-file=' . $self->{my_cnf_file},
       '--basedir=' . $base_dir,
       '--datadir=' . $self->{datadir}, # set by _create_mysql_cnf
-      ($with_insecure ? ('--insecure') : ()),
+      ($mode == 0 ? ('--insecure') : ()),
+      ($mode == 1 ? ('--auth-root-authentication-method=normal') : ()),
       '--verbose',
     ]);
     ## In some environment, |mysql_install_db| is a Perl script, which
@@ -161,11 +164,17 @@ sub _create_mysql_db ($) {
       return $_[0] if UNIVERSAL::isa ($_[0], 'Promised::Command::Result');
       die $_[0];
     })->then (sub {
-      if ($with_insecure and
+      if ($mode == 0 and
           ($stdout =~ /unknown option '--insecure'/ or
            $stderr =~ /unknown option '--insecure'/)) {
         warn "Retry |mysql_install_db| without |--insecure| option...\n";
-        return $run->(0);
+        return $run->(1);
+      }
+      if ($mode == 1 and
+          ($stdout =~ /unknown option '--auth-root-authentication-method'/ or
+           $stderr =~ /unknown option '--auth-root-authentication-method'/)) {
+        warn "Retry |mysql_install_db| without |--auth-root-authentication-method| option...\n";
+        return $run->(2);
       }
       if (not defined $temp and
           ($stdout =~ /FATAL ERROR: Could not find my-default.cnf/ or
@@ -192,7 +201,7 @@ sub _create_mysql_db ($) {
         })->then (sub {
           warn "Retrying with virtual basedir |$temp| (instead of |$base_dir|)...\n";
           $base_dir = $temp;
-          return $run->($with_insecure);
+          return $run->(0);
         });
       }
       unless ($_[0]->is_success and $_[0]->exit_code == 0) {
@@ -200,7 +209,7 @@ sub _create_mysql_db ($) {
       }
     });
   }; # $run;
-  return $run->(1)->then (sub {
+  return $run->(0)->then (sub {
     undef $run;
   }, sub {
     undef $run;
