@@ -201,7 +201,7 @@ sub _create_mysql_db ($) {
         })->then (sub {
           warn "Retrying with virtual basedir |$temp| (instead of |$base_dir|)...\n";
           $base_dir = $temp;
-          return $run->($with_insecure);
+          return $run->(0);
         });
       }
       unless ($_[0]->is_success and $_[0]->exit_code == 0) {
