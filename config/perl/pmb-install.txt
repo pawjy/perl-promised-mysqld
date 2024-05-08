@@ -12,7 +12,7 @@ File::Temp~0.2311
 Filter::Util::Call~1.64
 Method::WeakCallback~0.04
 Net::SSLeay~1.94
-Path::Tiny~0.144
+Path::Tiny~0.146
 Scalar::Util~1.63
 Term::ANSIColor~5.01
 Test::Builder~1.302199
